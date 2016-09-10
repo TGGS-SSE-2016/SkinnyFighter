@@ -1,0 +1,21 @@
+{
+    "ATK": [
+        {
+            "ARM1": 10,
+            "ARM2": 2,
+            "LEG1": 0,
+            "LEG2": 0
+        },
+        {
+            "id": "blabla",
+            "iscategorical": "0"
+        }
+    ],
+    "masks": {
+        "id": "valore"
+    },
+    "om_points": "value",
+    "parameters": {
+        "id": "valore"
+    }
+}

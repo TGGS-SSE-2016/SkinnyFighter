@@ -470,7 +470,6 @@ def drawItemBot2():
         DISPLAY.blit(img , (BOT2_POSITION[1].getX(),BOT2_POSITION[1].getY()))
 
 def STATE_EVENT1(): # for bot 1
-    background.draw(DISPLAY,display_width,display_height)
     global atk1_count
     if MOTION_STATE == "IDLE":
         IDLE();
@@ -1134,7 +1133,7 @@ print(data["om_points"]);
 pygame.key.set_repeat(1, 3)
 while True:
     for event in pygame.event.get():
-        keys=pygame.key.get_pressed();
+        keys=pygame.key.get_pressed()
         if keys[K_UP]:
             randColor1()
         if keys[K_DOWN]:
@@ -1143,13 +1142,13 @@ while True:
             pygame.quit()
             sys.exit()
         if (event.type == Eventid):
-            DISPLAY.fill((255, 255, 255))  # BG HERE
-            STATE_EVENT1();
-            STATE_EVENT2();
+            background.draw(DISPLAY,display_width,display_height)
+            STATE_EVENT1()
+            STATE_EVENT2()
             initDrawSkinny1()
             initDrawSkinny2()
-            drawWeaponBot1();
-            drawWeaponBot2();
+            drawWeaponBot1()
+            drawWeaponBot2()
             pygame.display.update()
             ## calculate damage
-            checkDamage();
+            checkDamage()

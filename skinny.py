@@ -5,6 +5,8 @@ from pygame.locals import *
 from random import randint
 import background
 import sys
+import random
+from RangeWeapon import RangeWeapon
 
 class Point:
     '''
@@ -27,7 +29,27 @@ class Point:
 
 
 
+#Display Variable
+display_width = 1024
+display_height = 768
 
+#HP Bar
+hp_bar_color_base = (108, 108, 108)
+hp_bar_color_fill = (255, 0, 0)
+offset_width_hp_bar = 56
+offset_height_hp_bar = 20
+hp_bar_width = (display_width/2) - (offset_width_hp_bar*2)
+hp_bar_height = 30
+
+#Fighting part
+WEAPON4_RADIUS = 20
+MAX_HP = 100
+HEAD_HIT_POINT = 10
+BODY_HIT_POINT = 5
+bot1_hammer_point = None
+bot1_scythe_point = None
+bot2_hammer_point = None
+bot2_scythe_point = None
 
 ####  BOT 1
 
@@ -42,10 +64,14 @@ arm_leg_length = 50
 sword_length = 200;
 COLOR = [(0, 0, 0), (128, 128, 128), (30, 128, 255), (255, 0, 0),(255,255,255)];
 
-
 MOTION_SEQ = 0;
 BOT1_POSITION = [];
 SWORD_ANGLE = 0;
+BOT1_RANGE_WEAPON = None
+BOT1_RANGE_WEAPON_FINISH = True
+BOT1_WEAPON_HITTING = False
+BOT1_RANGE_WEAPON_HITTING = False
+BOT1_HP = MAX_HP
 
 cetha1 = 0; # sword
 cetha2 = 0; # sword
@@ -68,6 +94,11 @@ COLOR2 = [(0, 0, 255), (128, 128, 128), (255, 128, 255), (255, 0, 0),(255,255,25
 MOTION2_SEQ = 0;
 BOT2_POSITION = [];
 SWORD_ANGLE2 = 0;
+BOT2_RANGE_WEAPON = None
+BOT2_RANGE_WEAPON_FINISH = True
+BOT2_WEAPON_HITTING = False
+BOT2_RANGE_WEAPON_HITTING = False
+BOT2_HP = MAX_HP
 
 cetha21 = 0; # sword
 cetha22 = 0; # sword
@@ -241,8 +272,6 @@ parameterInit();
 pointBot1Init();
 pointBot2Init();
 pygame.init()
-display_width = 1024
-display_height = 768
 DISPLAY = pygame.display.set_mode((display_width, display_height))
 DISPLAY.fill((255, 255, 255))                             #BG init
 #ANGLE PATTERN
@@ -345,7 +374,7 @@ def initDrawSkinny2():
 
 
 def drawWeaponBot1():
-    global MOTION_STATE
+    global MOTION_STATE, bot1_hammer_point, bot1_scythe_point
     pointlist = []
     if skinny_type1 == 1:
         pygame.draw.line(DISPLAY, COLOR[3], (BOT1_POSITION[10].getX(), BOT1_POSITION[10].getY()), (BOT1_POSITION[13].getX(), BOT1_POSITION[13].getY()), 10)
@@ -361,6 +390,8 @@ def drawWeaponBot1():
         myPoint = getDestination(13, cetha2+210, 80)                     #17
         pointlist.append( (myPoint.getX(), myPoint.getY() ))
         myPoint = getDestination(13, cetha2+180, 100)                     #18
+        bot1_hammer_point = [myPoint.getX(), myPoint.getY()]            #Get point 18 for calculate damage
+        #print("Hammer : " + str(bot1_hammer_point))
         pointlist.append( (myPoint.getX(), myPoint.getY() ))
         pygame.draw.polygon(DISPLAY,COLOR[3] , pointlist  , 0)
         # hammer
@@ -372,7 +403,8 @@ def drawWeaponBot1():
             ceta = cetha2+90-i
             p = getDestinationFromPoint( BOT1_POSITION[10].getX(), BOT1_POSITION[10].getY(), ceta , sword_length )
             pointlist.append( ( p.getX(), p.getY()))
-
+        bot1_scythe_point = [p.getX(), p.getY()]                        #Get for calculate damage
+        #print("Scythe : " + str(bot1_scythe_point))
         myPoint = getDestination(10, cetha2+90, sword_length - 20)
         pointlist.append( (myPoint.getX(), myPoint.getY() ))
 
@@ -381,15 +413,15 @@ def drawWeaponBot1():
     if skinny_type1 == 4:
         if MOTION_STATE == "ATK":
             pygame.draw.line(DISPLAY, COLOR[3], (BOT1_POSITION[10].getX(), BOT1_POSITION[10].getY()), (BOT1_POSITION[13].getX(), BOT1_POSITION[13].getY()), 2)
-            pygame.draw.circle(DISPLAY, COLOR[3], (int(BOT1_POSITION[13].getX()),int(BOT1_POSITION[13].getY())), 20, 0)
+            pygame.draw.circle(DISPLAY, COLOR[3], (int(BOT1_POSITION[13].getX()),int(BOT1_POSITION[13].getY())), WEAPON4_RADIUS, 0)
         else:
             pygame.draw.line(DISPLAY, COLOR[3], (BOT1_POSITION[10].getX(), BOT1_POSITION[10].getY()), (BOT1_POSITION[10].getX(), sword_length+BOT1_POSITION[10].getY()), 2)
-            pygame.draw.circle(DISPLAY, COLOR[3], (int(BOT1_POSITION[10].getX()),sword_length+int(BOT1_POSITION[10].getY())), 20, 0)
+            pygame.draw.circle(DISPLAY, COLOR[3], (int(BOT1_POSITION[10].getX()),sword_length+int(BOT1_POSITION[10].getY())), WEAPON4_RADIUS, 0)
             pass;
 
 
 def drawWeaponBot2():
-    global MOTION2_STATE
+    global MOTION2_STATE, bot2_hammer_point, bot2_scythe_point
     pointlist = []
     if skinny_type2 == 1:
         pygame.draw.line(DISPLAY, COLOR2[3], (BOT2_POSITION[9].getX(), BOT2_POSITION[9].getY()), (BOT2_POSITION[13].getX(), BOT2_POSITION[13].getY()), 10)
@@ -405,6 +437,8 @@ def drawWeaponBot2():
         myPoint = getDestination2(13, cetha22+210, 80)                     #17
         pointlist.append( (myPoint.getX(), myPoint.getY() ))
         myPoint = getDestination2(13, cetha22+180, 100)                     #18
+        bot2_hammer_point = [myPoint.getX(), myPoint.getY()]              #Get point 18 for calculate damage
+        #print("Hammer2 : " + str(bot1_hammer_point))
         pointlist.append( (myPoint.getX(), myPoint.getY() ))
         pygame.draw.polygon(DISPLAY,COLOR2[3] , pointlist  , 0)
         # hammer
@@ -415,16 +449,18 @@ def drawWeaponBot2():
             ceta_ = circle_angle2+i
             p = getDestinationFromPoint( BOT2_POSITION[9].getX(), BOT2_POSITION[9].getY(), ceta_ , sword_length2 )
             pointlist.append( ( p.getX(), p.getY()))
+        bot2_scythe_point = [p.getX(), p.getY()]                            #Get for calculate damage
+        #print("Scythe2 : " + str(bot1_scythe_point))
         myPoint = getDestination2(9, cetha22+270, sword_length2 - 20)
         pointlist.append( (myPoint.getX(), myPoint.getY() ))
         pygame.draw.polygon(DISPLAY,COLOR2[3] , pointlist  , 0)
     if skinny_type2 == 4:
         if MOTION2_STATE == "ATK":
             pygame.draw.line(DISPLAY, COLOR2[3], (BOT2_POSITION[9].getX(), BOT2_POSITION[9].getY()), (BOT2_POSITION[13].getX(), BOT2_POSITION[13].getY()), 2)
-            pygame.draw.circle(DISPLAY, COLOR2[3], (int(BOT2_POSITION[13].getX()),int(BOT2_POSITION[13].getY())), 20, 0)
+            pygame.draw.circle(DISPLAY, COLOR2[3], (int(BOT2_POSITION[13].getX()),int(BOT2_POSITION[13].getY())), WEAPON4_RADIUS, 0)
         else:
             pygame.draw.line(DISPLAY, COLOR2[3], (BOT2_POSITION[9].getX(), BOT2_POSITION[9].getY()), (BOT2_POSITION[9].getX(), sword_length+BOT2_POSITION[9].getY()), 2)
-            pygame.draw.circle(DISPLAY, COLOR2[3], (int(BOT2_POSITION[9].getX()),sword_length2+int(BOT2_POSITION[9].getY())), 20, 0)
+            pygame.draw.circle(DISPLAY, COLOR2[3], (int(BOT2_POSITION[9].getX()),sword_length2+int(BOT2_POSITION[9].getY())), WEAPON4_RADIUS, 0)
             pass;
 
 
@@ -1090,6 +1126,17 @@ def ATK_PENDULUM2():
     #print (">>>", str(MOTION2_SEQ))
 
 
+def hp_bar():
+    global hp_bar_color_base, hp_bar_color_fill, offset_width_hp_bar, offset_height_hp_bar, hp_bar_width, hp_bar_height, BOT1_HP, BOT2_HP, MAX_HP
+    #BOT1
+    bot1_hp_width = BOT1_HP * hp_bar_width / MAX_HP
+    pygame.draw.rect(DISPLAY, hp_bar_color_base, (offset_width_hp_bar, display_height - offset_height_hp_bar - hp_bar_height, hp_bar_width, hp_bar_height))
+    pygame.draw.rect(DISPLAY, hp_bar_color_fill, (offset_width_hp_bar + (hp_bar_width - bot1_hp_width), display_height - offset_height_hp_bar - hp_bar_height, bot1_hp_width, hp_bar_height))
+    #BOT2
+    bot2_hp_width = BOT2_HP * hp_bar_width / MAX_HP
+    pygame.draw.rect(DISPLAY, hp_bar_color_base, (display_width - offset_width_hp_bar - hp_bar_width, display_height - offset_height_hp_bar - hp_bar_height, hp_bar_width, hp_bar_height))
+    pygame.draw.rect(DISPLAY, hp_bar_color_fill, (display_width - offset_width_hp_bar - hp_bar_width, display_height - offset_height_hp_bar - hp_bar_height, bot2_hp_width, hp_bar_height))
+
 
 def loadJSON():
     global data;
@@ -1099,15 +1146,163 @@ def loadJSON():
 
 def initAll():
     ####  BOT 1
+    global BOT1_RANGE_WEAPON, BOT2_RANGE_WEAPON
 
     parameterInit();
     initDrawSkinny1();
     initDrawSkinny2();
 
-def checkDamage():
-    global MOTION_STATE,MOTION2_STATE,MOTION_SEQ,MOTION2_SEQ
+    hp_bar()
+    BOT1_RANGE_WEAPON_FINISH = True
+    BOT2_RANGE_WEAPON_FINISH = True
+    BOT1_RANGE_WEAPON = RangeWeapon(display_width, display_height, 1, skinny_type1)
+    BOT2_RANGE_WEAPON = RangeWeapon(display_width, display_height, 2, skinny_type2)
 
-    if atk1_count < 0 or atk2_count < 0:
+
+def checkDamage():
+    global MOTION_STATE,MOTION2_STATE,MOTION_SEQ,MOTION2_SEQ,BOT1_WEAPON_HITTING,BOT1_HP,BOT2_WEAPON_HITTING,BOT2_HP,MAX_HP,BOT1_RANGE_WEAPON_HITTING,HEAD_HIT_POINT,BODY_HIT_POINT,BOT2_RANGE_WEAPON_HITTING,bot1_hammer_point,bot2_hammer_point,bot1_scythe_point,bot2_scythe_point
+
+    #WEAPON BOT 1
+    if skinny_type1 == 1:
+        if BOT1_POSITION[13].getX() >= BOT2_POSITION[1].getX() and BOT1_POSITION[13].getY() >= BOT2_POSITION[1].getY():
+            if BOT1_WEAPON_HITTING == False:
+                BOT1_WEAPON_HITTING = True
+                BOT2_HP -= BODY_HIT_POINT
+                print("SWORD BODY")
+        elif BOT1_POSITION[13].getX() >= (BOT2_POSITION[0].getX() - radius) and BOT1_POSITION[13].getY() >= (BOT2_POSITION[0].getY() - radius):
+            if BOT1_WEAPON_HITTING == False:
+                BOT1_WEAPON_HITTING = True
+                BOT2_HP -= HEAD_HIT_POINT
+                print("SWORD HEAD")
+        else:
+            BOT1_WEAPON_HITTING = False
+    elif skinny_type1 == 2:
+        if bot1_hammer_point[0] >= BOT2_POSITION[1].getX() and bot1_hammer_point[1] >= BOT2_POSITION[1].getY():
+            if BOT1_WEAPON_HITTING == False:
+                BOT1_WEAPON_HITTING = True
+                BOT2_HP -= BODY_HIT_POINT
+                print("HAMMER BODY")
+        elif bot1_hammer_point[0] >= (BOT2_POSITION[0].getX() - radius) and bot1_hammer_point[1] >= (BOT2_POSITION[0].getY() - radius):
+            if BOT1_WEAPON_HITTING == False:
+                BOT1_WEAPON_HITTING = True
+                BOT2_HP -= HEAD_HIT_POINT
+                print("HAMMER HEAD")
+        else:
+            BOT1_WEAPON_HITTING = False
+    elif skinny_type1 == 3:
+        if bot1_scythe_point[0] >= BOT2_POSITION[1].getX() and bot1_scythe_point[1] >= BOT2_POSITION[1].getY():
+            if BOT1_WEAPON_HITTING == False:
+                BOT1_WEAPON_HITTING = True
+                BOT2_HP -= BODY_HIT_POINT
+                print("SCYTHE BODY")
+        elif bot1_scythe_point[0] >= (BOT2_POSITION[0].getX() - radius) and bot1_scythe_point[1] >= (BOT2_POSITION[0].getY() - radius):
+            if BOT1_WEAPON_HITTING == False:
+                BOT1_WEAPON_HITTING = True
+                BOT2_HP -= HEAD_HIT_POINT
+                print("SCYTHE HEAD")
+        else:
+            BOT1_WEAPON_HITTING = False
+    elif skinny_type1 == 4:
+        if (BOT1_POSITION[13].getX() + WEAPON4_RADIUS) >= BOT2_POSITION[1].getX() and (BOT1_POSITION[13].getY() + WEAPON4_RADIUS) >= BOT2_POSITION[1].getY():
+            if BOT1_WEAPON_HITTING == False:
+                BOT1_WEAPON_HITTING = True
+                BOT2_HP -= BODY_HIT_POINT
+                print("CIRCLE BODY")
+        elif (BOT1_POSITION[13].getX() + WEAPON4_RADIUS) >= (BOT2_POSITION[0].getX() - radius) and (BOT1_POSITION[13].getY() + WEAPON4_RADIUS) >= (BOT2_POSITION[0].getY() - radius):
+            if BOT1_WEAPON_HITTING == False:
+                BOT1_WEAPON_HITTING = True
+                BOT2_HP -= HEAD_HIT_POINT
+                print("CIRCLE HEAD")
+        else:
+            BOT1_WEAPON_HITTING = False
+
+    #Range Weapon BOT1
+    if BOT1_RANGE_WEAPON_FINISH == False:
+        if (BOT1_RANGE_WEAPON.getDrawX() + BOT1_RANGE_WEAPON.getRadius()) >= BOT2_POSITION[1].getX() and (BOT1_RANGE_WEAPON.getDrawY() + BOT1_RANGE_WEAPON.getRadius()) >= BOT2_POSITION[1].getY():
+            if BOT1_RANGE_WEAPON_HITTING == False:
+                BOT1_RANGE_WEAPON_HITTING = True
+                BOT2_HP -= BODY_HIT_POINT
+                print("RANGE BODY")
+        elif (BOT1_RANGE_WEAPON.getDrawX() + BOT1_RANGE_WEAPON.getRadius()) >= (BOT2_POSITION[0].getX() - radius)and (BOT1_RANGE_WEAPON.getDrawY() + BOT1_RANGE_WEAPON.getRadius()) >= (BOT2_POSITION[0].getY() - radius):
+            if BOT1_RANGE_WEAPON_HITTING == False:
+                BOT1_RANGE_WEAPON_HITTING = True
+                BOT2_HP -= HEAD_HIT_POINT
+                print("RANGE HEAD")
+        else:
+            BOT1_RANGE_WEAPON_HITTING = False
+
+    #WEAPON BOT 2
+    if skinny_type2 == 1:
+        if BOT2_POSITION[13].getX() <= BOT1_POSITION[2].getX() and BOT2_POSITION[13].getY() >= BOT1_POSITION[2].getY():
+            if BOT2_WEAPON_HITTING == False:
+                BOT2_WEAPON_HITTING = True
+                BOT1_HP -= BODY_HIT_POINT
+                print("SWORD2 BODY")
+        elif BOT2_POSITION[13].getX() <= (BOT1_POSITION[0].getX() - radius) and BOT2_POSITION[13].getY() >= (BOT1_POSITION[0].getY() - radius):
+            if BOT2_WEAPON_HITTING == False:
+                BOT2_WEAPON_HITTING = True
+                BOT1_HP -= HEAD_HIT_POINT
+                print("SWORD2 HEAD")
+        else:
+            BOT2_WEAPON_HITTING = False
+    elif skinny_type2 == 2:
+        if bot2_hammer_point[0] <= BOT1_POSITION[2].getX() and bot2_hammer_point[1] >= BOT1_POSITION[2].getY():
+            if BOT2_WEAPON_HITTING == False:
+                BOT2_WEAPON_HITTING = True
+                BOT1_HP -= BODY_HIT_POINT
+                print("HAMMER2 BODY")
+        elif bot2_hammer_point[0] <= (BOT1_POSITION[0].getX() - radius) and bot2_hammer_point[1] >= (BOT1_POSITION[0].getY() - radius):
+            if BOT2_WEAPON_HITTING == False:
+                BOT2_WEAPON_HITTING = True
+                BOT1_HP -= HEAD_HIT_POINT
+                print("HAMMER2 HEAD")
+        else:
+            BOT2_WEAPON_HITTING = False
+    elif skinny_type2 == 3:
+        if bot2_scythe_point[0] <= BOT1_POSITION[2].getX() and bot2_scythe_point[1] >= BOT1_POSITION[2].getY():
+            if BOT2_WEAPON_HITTING == False:
+                BOT2_WEAPON_HITTING = True
+                BOT1_HP -= BODY_HIT_POINT
+                print("SCYTHE2 BODY")
+        elif bot2_scythe_point[0] <= (BOT1_POSITION[0].getX() - radius) and bot2_scythe_point[1] >= (BOT1_POSITION[0].getY() - radius):
+            if BOT2_WEAPON_HITTING == False:
+                BOT2_WEAPON_HITTING = True
+                BOT1_HP -= HEAD_HIT_POINT
+                print("SCYTHE2 HEAD")
+        else:
+            BOT2_WEAPON_HITTING = False
+    elif skinny_type2 == 4:
+        if (BOT2_POSITION[13].getX() - WEAPON4_RADIUS) <= BOT1_POSITION[2].getX() and (BOT2_POSITION[13].getY() + WEAPON4_RADIUS) >= BOT1_POSITION[2].getY():
+            if BOT2_WEAPON_HITTING == False:
+                BOT2_WEAPON_HITTING = True
+                BOT1_HP -= BODY_HIT_POINT
+                print("CIRCLE2 BODY")
+        elif (BOT2_POSITION[13].getX() - WEAPON4_RADIUS) <= (BOT1_POSITION[0].getX() - radius) and (BOT2_POSITION[13].getY() + WEAPON4_RADIUS) >= (BOT1_POSITION[0].getY() - radius):
+            if BOT2_WEAPON_HITTING == False:
+                BOT2_WEAPON_HITTING = True
+                BOT1_HP -= HEAD_HIT_POINT
+                print("CIRCLE2 HEAD")
+        else:
+            BOT2_WEAPON_HITTING = False
+
+    #Range Weapon BOT2
+    if BOT2_RANGE_WEAPON_FINISH == False:
+        if (BOT2_RANGE_WEAPON.getDrawX() - BOT2_RANGE_WEAPON.getRadius()) <= BOT1_POSITION[2].getX() and (BOT2_RANGE_WEAPON.getDrawY() + BOT2_RANGE_WEAPON.getRadius()) >= BOT1_POSITION[2].getY():
+            if BOT2_RANGE_WEAPON_HITTING == False:
+                BOT2_RANGE_WEAPON_HITTING = True
+                BOT1_HP -= BODY_HIT_POINT
+                print("RANGE2 BODY")
+        elif (BOT2_RANGE_WEAPON.getDrawX() - BOT2_RANGE_WEAPON.getRadius()) <= (BOT1_POSITION[0].getX() - radius) and (BOT2_RANGE_WEAPON.getDrawY() + BOT2_RANGE_WEAPON.getRadius()) >= (BOT1_POSITION[0].getY() - radius):
+            if BOT2_RANGE_WEAPON_HITTING == False:
+                BOT2_RANGE_WEAPON_HITTING = True
+                BOT1_HP -= HEAD_HIT_POINT
+                print("RANGE2 HEAD")
+        else:
+            BOT2_RANGE_WEAPON_HITTING = False
+
+    
+    #Restart Battle
+    if BOT1_HP <= 0 or BOT2_HP <= 0:
         print("KO1")
         initAll()
         pointBot1Init();
@@ -1116,12 +1311,15 @@ def checkDamage():
         MOTION2_STATE = "IDLE"
         MOTION_SEQ = 0
         MOTION2_SEQ = 0
+        BOT1_HP = MAX_HP
+        BOT2_HP = MAX_HP
 
 def randColor1():
     COLOR[3] = (randint(0,255) ,randint(0,255) ,randint(0,255)  )
 
 def randColor2():
     COLOR2[3] = (randint(0,255) ,randint(0,255) ,randint(0,255)  )
+
 
 Eventid = pygame.USEREVENT + 1
 pygame.time.set_timer(Eventid, INTERVAL_TIME)
@@ -1138,17 +1336,32 @@ while True:
             randColor1()
         if keys[K_DOWN]:
             randColor2()
-        if event.type == QUIT:
+        if event.type == QUIT or keys[K_ESCAPE]:
             pygame.quit()
             sys.exit()
         if (event.type == Eventid):
             background.draw(DISPLAY,display_width,display_height)
+            #DISPLAY.fill((255, 255, 255)) 
             STATE_EVENT1()
             STATE_EVENT2()
             initDrawSkinny1()
             initDrawSkinny2()
             drawWeaponBot1()
             drawWeaponBot2()
+            #Range Weapon Activity for Bot2
+            if BOT1_RANGE_WEAPON_FINISH == True and random.randint(1,100) < 10 and MOTION_STATE == "ATK":
+                BOT1_RANGE_WEAPON.shuriken_setup(BOT1_POSITION[9].getX(), BOT1_POSITION[9].getY(), COLOR[3], COLOR[1])
+                BOT1_RANGE_WEAPON_FINISH = BOT1_RANGE_WEAPON.shuriken_show(DISPLAY)
+            if BOT1_RANGE_WEAPON_FINISH == False:
+                BOT1_RANGE_WEAPON_FINISH = BOT1_RANGE_WEAPON.shuriken_show(DISPLAY)
+
+            #Range Weapon Activity for Bot2
+            if BOT2_RANGE_WEAPON_FINISH == True and random.randint(1,100) < 10 and MOTION2_STATE == "ATK":
+                BOT2_RANGE_WEAPON.shuriken_setup(BOT2_POSITION[10].getX(), BOT2_POSITION[10].getY(), COLOR2[3], COLOR2[1])
+                BOT2_RANGE_WEAPON_FINISH = BOT2_RANGE_WEAPON.shuriken_show(DISPLAY)
+            if BOT2_RANGE_WEAPON_FINISH == False:
+                BOT2_RANGE_WEAPON_FINISH = BOT2_RANGE_WEAPON.shuriken_show(DISPLAY)
+            hp_bar()
             pygame.display.update()
             ## calculate damage
             checkDamage()

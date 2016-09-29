@@ -1361,7 +1361,8 @@ while True:
                 BOT2_RANGE_WEAPON_FINISH = BOT2_RANGE_WEAPON.shuriken_show(DISPLAY)
             if BOT2_RANGE_WEAPON_FINISH == False:
                 BOT2_RANGE_WEAPON_FINISH = BOT2_RANGE_WEAPON.shuriken_show(DISPLAY)
-            hp_bar()
-            pygame.display.update()
             ## calculate damage
             checkDamage()
+            hp_bar()
+            pygame.display.update()
+            

@@ -4,7 +4,7 @@ from pygame.locals import *
 import math
 from random import randint
 import background
-
+import time
 
 class vec2d(object):
 
@@ -24,15 +24,30 @@ white = (255, 255, 255)
 orange = (255, 152, 0)
 amber = (255, 111, 0)
 earth = (0, 77, 64)
+day_sky = (128,222,234)
+dark_sky = (0,96,100)
+moon = (255,241,118)
 
 
 def draw(display, display_width, display_height):
+    millis_weight = 10
+    mod_range = 1000
+    mod_weight = millis_weight*mod_range
+    mod_middle = mod_weight/2
+    millis = int(round(time.time() * 1000))
     display.fill((255, 255, 255))
-    draw_sand(display, display_width, display_height)
+    if millis%mod_weight > mod_middle:
+        draw_day(display, display_width, display_height)
+    elif millis%mod_weight< mod_middle:
+        draw_dark(display, display_width, display_height)
+
     draw_sky(display, display_width, display_height)
-    draw_sun(display, display_width, display_height)
     draw_wave(display, display_width, display_height)
-    draw_moon(display)
+
+    if millis%mod_weight > mod_middle:
+        draw_sun(display, display_width, display_height)
+    elif millis%mod_weight< mod_middle:
+        draw_moon(display)
 
 
 def draw_sun(display, display_width, display_height):
@@ -53,12 +68,10 @@ def draw_sun(display, display_width, display_height):
                   math.floor(Y - (math.sin(angle) * (radius_start))))
         point2 = (math.floor(X - (math.cos(angle) * (radius_end))),
                   math.floor(Y - (math.sin(angle) * (radius_end))))
-        sun1 = pygame.draw.lines(
+        pygame.draw.lines(
             display, radius_red, True, [point1, point2], 10)
 
-    sun2 = pygame.draw.circle(display, sun_red, sun_center, radius_length, 0)
-
-    return [sun1, sun2]
+    pygame.draw.circle(display, sun_red, sun_center, radius_length, 0)
 
 
 def draw_cloud(display, display_width, display_height):
@@ -85,26 +98,24 @@ def draw_wave(display, display_width, display_height):
         random_sea = randint(0, 3)
         for xaxis in range(0, display_width, 15):
             if wave == 0 or wave == wave_gang - 1:
-                wave = pygame.draw.circle(display, sea, (xaxis, (wave_start) + math.floor(
+                pygame.draw.circle(display, sea, (xaxis, (wave_start) + math.floor(
                     (amp) * math.sin(math.radians(xaxis)))), rim_tick, 0)
             elif wave == 0 or wave == wave_gang - 1:
-                wave = pygame.draw.circle(display, sea, (xaxis, (wave_start) + math.floor(
+                pygame.draw.circle(display, sea, (xaxis, (wave_start) + math.floor(
                     (amp) * math.sin(math.radians(xaxis)))), rim_tick, 0)
             else:
                 if random_sea == 0:
-                    wave = pygame.draw.circle(display, blue, (xaxis, (wave_start) + math.floor(
+                    pygame.draw.circle(display, blue, (xaxis, (wave_start) + math.floor(
                         (amp) * math.sin(math.radians(xaxis)))), sea_tick, 0)
                 elif random_sea == 1:
-                    wave = pygame.draw.circle(display, lightblue1, (xaxis, (
+                    pygame.draw.circle(display, lightblue1, (xaxis, (
                         wave_start) + math.floor((amp) * math.sin(math.radians(xaxis)))), sea_tick, 0)
                 elif random_sea == 2:
-                    wave = pygame.draw.circle(display, lightblue2, (xaxis, (
+                    pygame.draw.circle(display, lightblue2, (xaxis, (
                         wave_start) + math.floor((amp) * math.sin(math.radians(xaxis)))), sea_tick, 0)
                 elif random_sea == 3:
-                    wave = pygame.draw.circle(display, darkblue, (xaxis, (wave_start) + math.floor(
+                    pygame.draw.circle(display, darkblue, (xaxis, (wave_start) + math.floor(
                         (amp) * math.sin(math.radians(xaxis)))), sea_tick, 0)
-
-    return wave
 
 
 def draw_sky(display, display_width, display_height):
@@ -118,33 +129,36 @@ def draw_sky(display, display_width, display_height):
         for xaxis in range(0, display_width, randint(5, 20)):
             if randint(0, 1) == 0:
                 if sand % 2 == 0:
-                    sky = pygame.draw.circle(
+                    pygame.draw.circle(
                         display, orange, (xaxis, (start) + math.floor((amp) * math.sin(math.radians(xaxis)))), 10, 0)
                 else:
-                    sky = pygame.draw.circle(
+                    pygame.draw.circle(
                         display, amber, (xaxis, (start) + math.floor((amp) * math.sin(math.radians(xaxis)))), 10, 0)
             else:
                 if sand % 2 == 0:
-                    sky = pygame.draw.circle(
+                    pygame.draw.circle(
                         display, sea, (xaxis, (start) + math.floor((amp) * math.sin(math.radians(xaxis)))), 10, 0)
                 else:
-                    sky = pygame.draw.circle(
+                    pygame.draw.circle(
                         display, blue, (xaxis, (start) + math.floor((amp) * math.sin(math.radians(xaxis)))), 10, 0)
 
 
-def draw_sand(display, display_width, display_height):
-    sand = pygame.draw.rect(
-        display, earth, (0, 0, display_width, display_height), 0)
-    return sand
+def draw_day(display, display_width, display_height):
+    pygame.draw.rect(
+        display, day_sky, (0, 0, display_width, display_height), 0)
+
+def draw_dark(display, display_width, display_height):
+    pygame.draw.rect(
+        display, dark_sky, (0, 0, display_width, display_height), 0)
 
 
 def draw_moon(display):
     width = 30
-    height = 100
-    moon_head = [100, 100]
-    moon_tail = [100, moon_head[1] + height]
-    body_top = [moon_head[0]-(width+40), moon_head[1]+20]
-    body_low = [moon_head[0]-(width+40), moon_tail[1]-20]
+    height = 200
+    moon_head = [300, 100]
+    moon_tail = [moon_head[0], moon_head[1] + height]
+    body_top = [moon_head[0]-(width+80), moon_head[1]+20]
+    body_low = [moon_head[0]-(width+80), moon_tail[1]-20]
 
     for fillMoon in range(0, width):
         control_points = [vec2d(moon_head[0], moon_head[1]), vec2d(body_top[0]+fillMoon, body_top[
@@ -152,7 +166,7 @@ def draw_moon(display):
 
         # Draw bezier curve
         b_points = compute_bezier_points([(x.x, x.y) for x in control_points])
-        pygame.draw.lines(display, pygame.Color("red"), False, b_points, 2)
+        pygame.draw.lines(display, moon, False, b_points, 2)
 
 
 def compute_bezier_points(vertices, numPoints=None):

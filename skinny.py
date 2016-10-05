@@ -205,7 +205,7 @@ def getDestination2(index, Angle, Length):
     return Point(x, y)
 
 
-def getDestinationFromPoint(pointx,pointy, Angle, Length): 
+def getDestinationFromPoint(pointx,pointy, Angle, Length):
     global BOT1_POSITION;
     angle = -1 * Angle;
     point = Point( pointx,pointy)
@@ -477,7 +477,6 @@ def drawItemBot1():
     if skinny_type1 == 3:
         offset_eye = int(radius/randint(2, 3))
         eye_size = int(radius/randint(3, 4))
-        eye_size = int(radius/randint(3, 4))
         pygame.draw.circle(DISPLAY, COLOR[4], (BOT1_POSITION[0].getX()+ offset_eye+3 ,BOT1_POSITION[0].getY()  ), int(eye_size), 0)
         pygame.draw.circle(DISPLAY, COLOR[3], (BOT1_POSITION[0].getX()+ offset_eye+3, BOT1_POSITION[0].getY()  ), int(eye_size*.75), 0)
         pygame.draw.circle(DISPLAY, COLOR[4], (BOT1_POSITION[0].getX()- offset_eye+3 ,BOT1_POSITION[0].getY()  ), int(eye_size), 0)
@@ -496,9 +495,8 @@ def drawItemBot2():
     if skinny_type2 == 2:
         DISPLAY.blit(img2 , (BOT2_POSITION[0].getX()-radius,BOT2_POSITION[0].getY()))
     if skinny_type2 == 3:
-        offset_eye = int(radius2/randint(2, 3))
-        eye_size = int(radius2/randint(3, 4))
-        eye_size = int(radius2/randint(3, 4))
+        offset_eye = int(radius/randint(2, 3))
+        eye_size = int(radius/randint(3, 4))        
         pygame.draw.circle(DISPLAY, COLOR2[4], (BOT2_POSITION[0].getX()+ offset_eye-3 ,BOT2_POSITION[0].getY()  ), int(eye_size), 0)
         pygame.draw.circle(DISPLAY, COLOR2[3], (BOT2_POSITION[0].getX()+ offset_eye-3, BOT2_POSITION[0].getY()  ), int(eye_size*.75), 0)
         pygame.draw.circle(DISPLAY, COLOR2[4], (BOT2_POSITION[0].getX()- offset_eye-3 ,BOT2_POSITION[0].getY()  ), int(eye_size), 0)
@@ -1179,6 +1177,7 @@ def initAll():
         for i in range (2):
             img2 = pygame.image.load("Thug-Life.png")#.convert_alpha()
         print("im2 Th")
+
     if skinny_type2 == 3:
         pass
     if skinny_type2 == 4:
@@ -1190,14 +1189,14 @@ def initAll():
     parameterInit();
     initDrawSkinny1();
     initDrawSkinny2();
-    
+
     hp_bar()
     BOT1_RANGE_WEAPON_FINISH = True
     BOT2_RANGE_WEAPON_FINISH = True
     BOT1_RANGE_WEAPON = RangeWeapon(display_width, display_height, 1, skinny_type1)
     BOT2_RANGE_WEAPON = RangeWeapon(display_width, display_height, 2, skinny_type2)
-    
-    
+
+
 
 
 
@@ -1342,7 +1341,7 @@ def checkDamage():
         else:
             BOT2_RANGE_WEAPON_HITTING = False
 
-    
+
     #Restart Battle
     if BOT1_HP <= 0 or BOT2_HP <= 0:
         pygame.time.set_timer(Eventid, 0)
@@ -1391,7 +1390,7 @@ while True:
             sys.exit()
         if (event.type == Eventid):
             background.draw(DISPLAY,display_width,display_height)
-            #DISPLAY.fill((255, 255, 255)) 
+            #DISPLAY.fill((255, 255, 255))
             STATE_EVENT1()
             STATE_EVENT2()
             initDrawSkinny1()
@@ -1415,4 +1414,3 @@ while True:
             checkDamage()
             hp_bar()
             pygame.display.update()
-            

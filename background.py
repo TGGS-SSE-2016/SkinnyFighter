@@ -1,60 +1,72 @@
-import pygame, sys
+import pygame
+import sys
 from pygame.locals import *
 import math
 from random import randint
 import background
 
+
 class vec2d(object):
+
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
 indigo = (121, 134, 203)
-sun_red = (191,54,12)
-radius_red = (230,74,25)
-sea = (13,71,161)
-lightblue1 = (3,155,229)
-lightblue2 = (41,182,246)
-blue = (2,119,189)
-darkblue = (129,212,250)
-white =(255,255,255)
-orange = (255,152,0)
-amber = (255,111,0)
-earth = (0,77,64)
+sun_red = (191, 54, 12)
+radius_red = (230, 74, 25)
+sea = (13, 71, 161)
+lightblue1 = (3, 155, 229)
+lightblue2 = (41, 182, 246)
+blue = (2, 119, 189)
+darkblue = (129, 212, 250)
+white = (255, 255, 255)
+orange = (255, 152, 0)
+amber = (255, 111, 0)
+earth = (0, 77, 64)
 
-def draw(display,display_width,display_height):
-    display.fill((255,255,255))
-    draw_sand(display,display_width,display_height)
-    draw_sky(display,display_width,display_height)
-    draw_sun(display,display_width,display_height)
-    draw_wave(display,display_width,display_height)
+
+def draw(display, display_width, display_height):
+    display.fill((255, 255, 255))
+    draw_sand(display, display_width, display_height)
+    draw_sky(display, display_width, display_height)
+    draw_sun(display, display_width, display_height)
+    draw_wave(display, display_width, display_height)
     draw_moon(display)
 
-def draw_sun(display,display_width,display_height):
+
+def draw_sun(display, display_width, display_height):
     sun_center = (200, 100)
-    radius_number = 10+randint(0,10)
-    radius_length = 40+randint(0,10)
-    sub_radius_angle = 360/radius_number
-    sun_radius = 50+randint(0,10)
-    sun_radius_gap = 10+randint(0,10)
-    for radius_index in range(0,radius_number):
-        angle = math.radians((radius_index-1)*sub_radius_angle)
+    radius_number = 10 + randint(0, 10)
+    radius_length = 40 + randint(0, 10)
+    sub_radius_angle = 360 / radius_number
+    sun_radius = 50 + randint(0, 10)
+    sun_radius_gap = 10 + randint(0, 10)
+    for radius_index in range(0, radius_number):
+        angle = math.radians((radius_index - 1) * sub_radius_angle)
         X = sun_center[0]
         Y = sun_center[1]
-        radius_start = radius_length+sun_radius_gap+randint(0,40)
-        radius_end = sun_radius+radius_length+sun_radius_gap+randint(0,40)
-        point1 = (math.floor(X - (math.cos(angle)*(radius_start))),math.floor(Y - (math.sin(angle)*(radius_start))))
-        point2 = (math.floor(X - (math.cos(angle)*(radius_end))),math.floor(Y - (math.sin(angle)*(radius_end))))
-        sun1 = pygame.draw.lines(display, radius_red, True, [point1,point2], 10)
+        radius_start = radius_length + sun_radius_gap + randint(0, 40)
+        radius_end = sun_radius + radius_length + \
+            sun_radius_gap + randint(0, 40)
+        point1 = (math.floor(X - (math.cos(angle) * (radius_start))),
+                  math.floor(Y - (math.sin(angle) * (radius_start))))
+        point2 = (math.floor(X - (math.cos(angle) * (radius_end))),
+                  math.floor(Y - (math.sin(angle) * (radius_end))))
+        sun1 = pygame.draw.lines(
+            display, radius_red, True, [point1, point2], 10)
 
     sun2 = pygame.draw.circle(display, sun_red, sun_center, radius_length, 0)
 
-    return [sun1,sun2]
+    return [sun1, sun2]
 
-def draw_cloud(display,display_width,display_height):
-    pygame.draw.arc(display, indigo, (600,150,100,80), math.radians(0), math.radians(randint(10,300)),4)
 
-def draw_wave(display,display_width,display_height):
+def draw_cloud(display, display_width, display_height):
+    pygame.draw.arc(display, indigo, (600, 150, 100, 80),
+                    math.radians(0), math.radians(randint(10, 300)), 4)
+
+
+def draw_wave(display, display_width, display_height):
     sea_tick = 20
     rim_tick = 20
     start_point = 600
@@ -64,79 +76,83 @@ def draw_wave(display,display_width,display_height):
     min_wave = 10
     max_amp = 50
     wave_gap = 25
-    wave_gang = randint(min_wave,max_wave)
+    wave_gang = randint(min_wave, max_wave)
 
-    for wave in range(0,wave_gang,2):
-        vary_base = randint(30,50)
-        amp = randint(vary_base,max_amp)
+    for wave in range(0, wave_gang, 2):
+        vary_base = randint(30, 50)
+        amp = randint(vary_base, max_amp)
         wave_start -= wave_gap
-        random_sea = randint(0,3)
-        for xaxis in range(0,display_width,15):
-            if wave == 0 or wave == wave_gang-1:
-                wave = pygame.draw.circle(display, sea, (xaxis, (wave_start)+math.floor((amp)*math.sin(math.radians(xaxis)))), rim_tick, 0)
-            elif wave == 0 or wave == wave_gang-1:
-                wave = pygame.draw.circle(display, sea, (xaxis, (wave_start)+math.floor((amp)*math.sin(math.radians(xaxis)))), rim_tick, 0)
+        random_sea = randint(0, 3)
+        for xaxis in range(0, display_width, 15):
+            if wave == 0 or wave == wave_gang - 1:
+                wave = pygame.draw.circle(display, sea, (xaxis, (wave_start) + math.floor(
+                    (amp) * math.sin(math.radians(xaxis)))), rim_tick, 0)
+            elif wave == 0 or wave == wave_gang - 1:
+                wave = pygame.draw.circle(display, sea, (xaxis, (wave_start) + math.floor(
+                    (amp) * math.sin(math.radians(xaxis)))), rim_tick, 0)
             else:
                 if random_sea == 0:
-                    wave = pygame.draw.circle(display, blue, (xaxis, (wave_start)+math.floor((amp)*math.sin(math.radians(xaxis)))), sea_tick, 0)
+                    wave = pygame.draw.circle(display, blue, (xaxis, (wave_start) + math.floor(
+                        (amp) * math.sin(math.radians(xaxis)))), sea_tick, 0)
                 elif random_sea == 1:
-                    wave = pygame.draw.circle(display, lightblue1, (xaxis, (wave_start)+math.floor((amp)*math.sin(math.radians(xaxis)))), sea_tick, 0)
+                    wave = pygame.draw.circle(display, lightblue1, (xaxis, (
+                        wave_start) + math.floor((amp) * math.sin(math.radians(xaxis)))), sea_tick, 0)
                 elif random_sea == 2:
-                    wave = pygame.draw.circle(display, lightblue2, (xaxis, (wave_start)+math.floor((amp)*math.sin(math.radians(xaxis)))), sea_tick, 0)
+                    wave = pygame.draw.circle(display, lightblue2, (xaxis, (
+                        wave_start) + math.floor((amp) * math.sin(math.radians(xaxis)))), sea_tick, 0)
                 elif random_sea == 3:
-                    wave = pygame.draw.circle(display, darkblue, (xaxis, (wave_start)+math.floor((amp)*math.sin(math.radians(xaxis)))), sea_tick, 0)
+                    wave = pygame.draw.circle(display, darkblue, (xaxis, (wave_start) + math.floor(
+                        (amp) * math.sin(math.radians(xaxis)))), sea_tick, 0)
 
     return wave
 
-def draw_sky(display,display_width,display_height):
+
+def draw_sky(display, display_width, display_height):
     start_point = 500
     end_point = 800
-    gap = math.floor((end_point-start_point)/20)
+    gap = math.floor((end_point - start_point) / 20)
     amp = 1
-    for sand in range(0,4):
+    for sand in range(0, 4):
         amp = 10
-        start = sand*30
-        for xaxis in range(0,display_width,randint(5,20)):
-            if randint(0,1) == 0:
-                if sand%2 == 0:
-                    sky = pygame.draw.circle(display, orange, (xaxis, (start)+math.floor((amp)*math.sin(math.radians(xaxis)))), 10, 0)
+        start = sand * 30
+        for xaxis in range(0, display_width, randint(5, 20)):
+            if randint(0, 1) == 0:
+                if sand % 2 == 0:
+                    sky = pygame.draw.circle(
+                        display, orange, (xaxis, (start) + math.floor((amp) * math.sin(math.radians(xaxis)))), 10, 0)
                 else:
-                    sky = pygame.draw.circle(display, amber, (xaxis, (start)+math.floor((amp)*math.sin(math.radians(xaxis)))), 10, 0)
+                    sky = pygame.draw.circle(
+                        display, amber, (xaxis, (start) + math.floor((amp) * math.sin(math.radians(xaxis)))), 10, 0)
             else:
-                if sand%2 == 0:
-                    sky = pygame.draw.circle(display, sea, (xaxis, (start)+math.floor((amp)*math.sin(math.radians(xaxis)))), 10, 0)
+                if sand % 2 == 0:
+                    sky = pygame.draw.circle(
+                        display, sea, (xaxis, (start) + math.floor((amp) * math.sin(math.radians(xaxis)))), 10, 0)
                 else:
-                    sky = pygame.draw.circle(display, blue, (xaxis, (start)+math.floor((amp)*math.sin(math.radians(xaxis)))), 10, 0)
+                    sky = pygame.draw.circle(
+                        display, blue, (xaxis, (start) + math.floor((amp) * math.sin(math.radians(xaxis)))), 10, 0)
 
 
-
-def draw_sand(display,display_width,display_height):
-    sand = pygame.draw.rect(display, earth, (0,0,display_width,display_height), 0)
+def draw_sand(display, display_width, display_height):
+    sand = pygame.draw.rect(
+        display, earth, (0, 0, display_width, display_height), 0)
     return sand
+
 
 def draw_moon(display):
     width = 30
     height = 100
+    moon_head = [100, 100]
+    moon_tail = [100, moon_head[1] + height]
+    body_top = [moon_head[0]-(width+40), moon_head[1]+20]
+    body_low = [moon_head[0]-(width+40), moon_tail[1]-20]
 
-    ### Control points that are later used to calculate the curve
-    control_points1 = [vec2d(100,100), vec2d(50,150), vec2d(50,200), vec2d(100,250)]
-    control_points2 = [vec2d(100,100), vec2d(30,150), vec2d(30,220), vec2d(100,250)]
-    ### Draw control points
-    for p in control_points1:
-        pygame.draw.circle(display, amber, (int(p.x), int(p.y)), 4)
-    for p in control_points2:
-        pygame.draw.circle(display, amber, (int(p.x), int(p.y)), 4)
+    for fillMoon in range(0, width):
+        control_points = [vec2d(moon_head[0], moon_head[1]), vec2d(body_top[0]+fillMoon, body_top[
+            1]), vec2d(body_low[0]+fillMoon, body_low[1]), vec2d(moon_tail[0], moon_tail[1])]
 
-    ### Draw control "lines"
-    pygame.draw.lines(display, indigo, False, [(x.x, x.y) for x in control_points1])
-    pygame.draw.lines(display, indigo, False, [(x.x, x.y) for x in control_points2])
-
-    ### Draw bezier curve
-    b_points1 = compute_bezier_points([(x.x, x.y) for x in control_points1])
-    b_points2 = compute_bezier_points([(x.x, x.y) for x in control_points2])
-    pygame.draw.lines(display, pygame.Color("red"), False, b_points1, 2)
-    pygame.draw.lines(display, pygame.Color("red"), False, b_points2, 2)
-
+        # Draw bezier curve
+        b_points = compute_bezier_points([(x.x, x.y) for x in control_points])
+        pygame.draw.lines(display, pygame.Color("red"), False, b_points, 2)
 
 
 def compute_bezier_points(vertices, numPoints=None):
@@ -156,8 +172,6 @@ def compute_bezier_points(vertices, numPoints=None):
     b3x = vertices[3][0]
     b3y = vertices[3][1]
 
-
-
     # Compute polynomial coefficients from Bezier points
     ax = -b0x + 3 * b1x + -3 * b2x + b3x
     ay = -b0y + 3 * b1y + -3 * b2y + b3y
@@ -172,8 +186,8 @@ def compute_bezier_points(vertices, numPoints=None):
     dy = b0y
 
     # Set up the number of steps and step size
-    numSteps = numPoints - 1 # arbitrary choice
-    h = 1.0 / numSteps # compute our step size
+    numSteps = numPoints - 1  # arbitrary choice
+    h = 1.0 / numSteps  # compute our step size
 
     # Compute forward differences from Bezier points and "h"
     pointX = dx
@@ -181,7 +195,6 @@ def compute_bezier_points(vertices, numPoints=None):
 
     firstFDX = ax * (h * h * h) + bx * (h * h) + cx * h
     firstFDY = ay * (h * h * h) + by * (h * h) + cy * h
-
 
     secondFDX = 6 * ax * (h * h * h) + 2 * bx * (h * h)
     secondFDY = 6 * ay * (h * h * h) + 2 * by * (h * h)

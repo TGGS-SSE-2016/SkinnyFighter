@@ -139,13 +139,13 @@ def randSkinny():
     cur1 = skinny_type1
     cur2 = skinny_type2
     while 1:
-        rand = randint(3,4)
+        rand = randint(1,4)
         if rand != cur1:
             skinny_type1 = rand
             break
 
     while 1:
-        rand = randint(3,4)
+        rand = randint(1,4)
         if rand != cur2 and rand != skinny_type1 :
             skinny_type2 = rand
             break

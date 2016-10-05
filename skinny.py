@@ -139,13 +139,13 @@ def randSkinny():
     cur1 = skinny_type1
     cur2 = skinny_type2
     while 1:
-        rand = randint(1,4)
+        rand = randint(3,4)
         if rand != cur1:
             skinny_type1 = rand
             break
 
     while 1:
-        rand = randint(1,4)
+        rand = randint(3,4)
         if rand != cur2 and rand != skinny_type1 :
             skinny_type2 = rand
             break
@@ -469,7 +469,7 @@ def drawWeaponBot2():
 
 
 def drawItemBot1():
-    global img1,skinny_type1;
+    global img1,skinny_type1,y_offset_r_leg,CONTS_R_LEG_OFFSET;
     if skinny_type1 == 1:
         DISPLAY.blit(img1 , (BOT1_POSITION[0].getX()-radius,BOT1_POSITION[0].getY()))
     if skinny_type1 == 2:
@@ -481,12 +481,34 @@ def drawItemBot1():
         pygame.draw.circle(DISPLAY, COLOR[3], (BOT1_POSITION[0].getX()+ offset_eye+3, BOT1_POSITION[0].getY()  ), int(eye_size*.75), 0)
         pygame.draw.circle(DISPLAY, COLOR[4], (BOT1_POSITION[0].getX()- offset_eye+3 ,BOT1_POSITION[0].getY()  ), int(eye_size), 0)
         pygame.draw.circle(DISPLAY, COLOR[3], (BOT1_POSITION[0].getX()- offset_eye+3, BOT1_POSITION[0].getY()  ), int(eye_size*.75), 0)
+        i = 1;
+        while(i<=8):
+            if i == 4 or i == 8:
+                y_offset_r_leg = -5;
+            else:
+                y_offset_r_leg = 0
+            pygame.draw.line(DISPLAY, COLOR[0], (BOT1_POSITION[i].getX(), BOT1_POSITION[i].getY()+y_offset_r_leg), (BOT1_POSITION[i+4].getX(), BOT1_POSITION[i+4].getY()+y_offset_r_leg), 20)
+            i = i+1;
+        W = W_body/2 - 10
+        H = H_body/2 - 10
+        pygame.draw.rect(DISPLAY, (randint(0,255) ,randint(0,255) ,randint(0,255)), (BOT1_POSITION[1].getX()+5, BOT1_POSITION[1].getY()+5, W, H))
+        pygame.draw.rect(DISPLAY, (randint(0,255) ,randint(0,255) ,randint(0,255)), (BOT1_POSITION[1].getX()+5 + W_body/2 , BOT1_POSITION[1].getY()+5, W, H))
+        pygame.draw.rect(DISPLAY, (randint(0,255) ,randint(0,255) ,randint(0,255)), (BOT1_POSITION[1].getX()+5, BOT1_POSITION[1].getY()+5 + H_body/2 , W, H))
+        pygame.draw.rect(DISPLAY, (randint(0,255) ,randint(0,255) ,randint(0,255)), (BOT1_POSITION[1].getX()+5 + W_body/2, BOT1_POSITION[1].getY()+5 + H_body/2 , W, H))
+            
+        
     if skinny_type1 == 4:
         pygame.draw.rect(DISPLAY, (255,255,255), (BOT1_POSITION[0].getX()-radius, BOT1_POSITION[0].getY(), radius*2, radius/10))
-        #img1 = pygame.image.load("body.jpg")#.convert_alpha()
         DISPLAY.blit(img1 , (BOT1_POSITION[1].getX(),BOT1_POSITION[1].getY()))
-        #pygame.draw.rect(DISPLAY, (255,255,255), (BOT1_POSITION[0].getX(), BOT1_POSITION[0].getY()-radius, radius/10, radius*2))
-        #DISPLAY.blit(img1 , (BOT1_POSITION[1].getX(),BOT1_POSITION[1].getY()))
+        i = 1;
+        while(i<=8):
+            if i == 4 or i == 8:
+                y_offset_r_leg = -5;
+            else:
+                y_offset_r_leg = 0
+            pygame.draw.line(DISPLAY, COLOR[0], (BOT1_POSITION[i].getX(), BOT1_POSITION[i].getY()+y_offset_r_leg), (BOT1_POSITION[i+4].getX(), BOT1_POSITION[i+4].getY()+y_offset_r_leg), 20)
+            i = i+1;
+
 
 def drawItemBot2():
     global img2,skinny_type2;
@@ -501,12 +523,32 @@ def drawItemBot2():
         pygame.draw.circle(DISPLAY, COLOR2[3], (BOT2_POSITION[0].getX()+ offset_eye-3, BOT2_POSITION[0].getY()  ), int(eye_size*.75), 0)
         pygame.draw.circle(DISPLAY, COLOR2[4], (BOT2_POSITION[0].getX()- offset_eye-3 ,BOT2_POSITION[0].getY()  ), int(eye_size), 0)
         pygame.draw.circle(DISPLAY, COLOR2[3], (BOT2_POSITION[0].getX()- offset_eye-3, BOT2_POSITION[0].getY()  ), int(eye_size*.75), 0)
+        i = 1;
+        while(i<=8):
+            if i == 4 or i == 8:
+                y_offset_r_leg = -5;
+            else:
+                y_offset_r_leg = 0
+            pygame.draw.line(DISPLAY, COLOR2[0], (BOT2_POSITION[i].getX(), BOT2_POSITION[i].getY()+y_offset_r_leg), (BOT2_POSITION[i+4].getX(), BOT2_POSITION[i+4].getY()+y_offset_r_leg), 20)
+            i = i+1;
+        W = W_body/2 - 10
+        H = H_body/2 - 10
+        pygame.draw.rect(DISPLAY, (randint(0,255) ,randint(0,255) ,randint(0,255)), (BOT2_POSITION[1].getX()+5, BOT2_POSITION[1].getY()+5, W, H))
+        pygame.draw.rect(DISPLAY, (randint(0,255) ,randint(0,255) ,randint(0,255)), (BOT2_POSITION[1].getX()+5 + W_body/2 , BOT2_POSITION[1].getY()+5, W, H))
+        pygame.draw.rect(DISPLAY, (randint(0,255) ,randint(0,255) ,randint(0,255)), (BOT2_POSITION[1].getX()+5, BOT2_POSITION[1].getY()+5 + H_body/2 , W, H))
+        pygame.draw.rect(DISPLAY, (randint(0,255) ,randint(0,255) ,randint(0,255)), (BOT2_POSITION[1].getX()+5 + W_body/2, BOT2_POSITION[1].getY()+5 + H_body/2 , W, H))
     if skinny_type2 == 4:
         pygame.draw.rect(DISPLAY, (255,255,255), (BOT2_POSITION[0].getX()-radius, BOT2_POSITION[0].getY(), radius2*2, radius2/10))
-        #img2 = pygame.image.load("body.jpg")#.convert_alpha()
         DISPLAY.blit(img2 , (BOT2_POSITION[1].getX(),BOT2_POSITION[1].getY()))
-        #pygame.draw.rect(DISPLAY, (255,255,255), (BOT2_POSITION[0].getX(), BOT2_POSITION[0].getY()-radius2, radius2/10, radius2*2))
-        #DISPLAY.blit(img2 , (BOT2_POSITION[1].getX(),BOT2_POSITION[1].getY()))
+        i = 1;
+        while(i<=8):
+            if i == 4 or i == 8:
+                y_offset_r_leg = -5;
+            else:
+                y_offset_r_leg = 0
+            pygame.draw.line(DISPLAY, COLOR2[0], (BOT2_POSITION[i].getX(), BOT2_POSITION[i].getY()+y_offset_r_leg), (BOT2_POSITION[i+4].getX(), BOT2_POSITION[i+4].getY()+y_offset_r_leg), 20)
+            i = i+1;
+ 
 
 def STATE_EVENT1(): # for bot 1
     global atk1_count

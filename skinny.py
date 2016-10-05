@@ -122,7 +122,7 @@ pygame.init()
 DISPLAY = pygame.display.set_mode((display_width, display_height))
 DISPLAY.fill((255, 255, 255))                             #BG init
 img1 = pygame.image.load("glasses.png").convert_alpha()
-img2 = pygame.image.load("glasses.png").convert_alpha()
+img2 = pygame.image.load("Thug-Life.png").convert_alpha()
 
 H_start_offset = 150
 CONTS_R_LEG_OFFSET = -5;
@@ -131,8 +131,8 @@ data = [];
 
 #1.sword #2.hammer #3.scythe #4.fist
 
-skinny_type1 = 1
-skinny_type2 = 1
+skinny_type1 = 5
+skinny_type2 = 5
 
 def randSkinny():
     global skinny_type1,skinny_type2
@@ -1151,9 +1151,11 @@ def initAll():
 
     #Texture
     if skinny_type1 == 1:
-        img1 = pygame.image.load("glasses.png").convert_alpha()
+        for i in range (2):
+            img1 = pygame.image.load("glasses.png").convert_alpha()
     if skinny_type1 == 2:
-        img1 = pygame.image.load("glasses.png").convert_alpha()
+        for i in range (2):
+            img1 = pygame.image.load("glasses.png").convert_alpha()
     if skinny_type1 == 3:
         pass
     if skinny_type1 == 4:
@@ -1161,9 +1163,11 @@ def initAll():
         #img1 = pygame.image.load("face.png").convert_alpha()
         
     if skinny_type2 == 1:
-        img2 = pygame.image.load("Thug-Life.png").convert_alpha()
+        for i in range (2): 
+            img2 = pygame.image.load("Thug-Life.png").convert_alpha()
     if skinny_type2 == 2:
-        img2 = pygame.image.load("Thug-Life.png").convert_alpha()      
+        for i in range (2):
+            img2 = pygame.image.load("Thug-Life.png").convert_alpha()      
     if skinny_type2 == 3:
         pass
     if skinny_type2 == 4:

@@ -117,6 +117,10 @@ MOTION2_STATE = "IDLE";
 ATK_SPEED1 = 1.5;
 ATK_SPEED2 = 1;
 
+#Skinny
+img1 = 0;
+img2 = 0;
+
 H_start_offset = 150
 CONTS_R_LEG_OFFSET = -5;
 INTERVAL_TIME = 100;        # milli sec
@@ -199,7 +203,7 @@ def getDestination2(index, Angle, Length):
     return Point(x, y)
 
 
-def getDestinationFromPoint(pointx,pointy, Angle, Length): # not use yet for hammer
+def getDestinationFromPoint(pointx,pointy, Angle, Length): 
     global BOT1_POSITION;
     angle = -1 * Angle;
     point = Point( pointx,pointy)
@@ -268,12 +272,7 @@ def pointBot2Init():
 
 ########################################################################
 
-parameterInit();
-pointBot1Init();
-pointBot2Init();
-pygame.init()
-DISPLAY = pygame.display.set_mode((display_width, display_height))
-DISPLAY.fill((255, 255, 255))                             #BG init
+
 #ANGLE PATTERN
 WALK_MOTION = [
     [180, 235, 200, 210, 220], #L ARM 0
@@ -468,12 +467,11 @@ def drawWeaponBot2():
 
 
 def drawItemBot1():
+    global img1;
     if skinny_type1 == 1:
-        img = pygame.image.load("glasses.png").convert_alpha()
-        DISPLAY.blit(img , (BOT1_POSITION[0].getX()-radius,BOT1_POSITION[0].getY()))
+        DISPLAY.blit(img1 , (BOT1_POSITION[0].getX()-radius,BOT1_POSITION[0].getY()))
     if skinny_type1 == 2:
-        img = pygame.image.load("glasses.png").convert_alpha()
-        DISPLAY.blit(img , (BOT1_POSITION[0].getX()-radius,BOT1_POSITION[0].getY()))
+        DISPLAY.blit(img1 , (BOT1_POSITION[0].getX()-radius,BOT1_POSITION[0].getY()))
     if skinny_type1 == 3:
         offset_eye = int(radius/randint(2, 3))
         eye_size = int(radius/randint(3, 4))
@@ -483,16 +481,14 @@ def drawItemBot1():
         pygame.draw.circle(DISPLAY, COLOR[4], (BOT1_POSITION[0].getX()- offset_eye+3 ,BOT1_POSITION[0].getY()  ), int(eye_size), 0)
         pygame.draw.circle(DISPLAY, COLOR[3], (BOT1_POSITION[0].getX()- offset_eye+3, BOT1_POSITION[0].getY()  ), int(eye_size*.75), 0)
     if skinny_type1 == 4:
-        img = pygame.image.load("face.png").convert_alpha()
-        DISPLAY.blit(img , (BOT1_POSITION[1].getX(),BOT1_POSITION[1].getY()))
+        DISPLAY.blit(img1 , (BOT1_POSITION[1].getX(),BOT1_POSITION[1].getY()))
 
 def drawItemBot2():
+    global img2;
     if skinny_type2 == 1:
-        img = pygame.image.load("Thug-Life.png").convert_alpha()
-        DISPLAY.blit(img , (BOT2_POSITION[0].getX()-radius,BOT2_POSITION[0].getY()))
+        DISPLAY.blit(img2 , (BOT2_POSITION[0].getX()-radius,BOT2_POSITION[0].getY()))
     if skinny_type2 == 2:
-        img = pygame.image.load("Thug-Life.png").convert_alpha()
-        DISPLAY.blit(img , (BOT2_POSITION[0].getX()-radius,BOT2_POSITION[0].getY()))
+        DISPLAY.blit(img2 , (BOT2_POSITION[0].getX()-radius,BOT2_POSITION[0].getY()))
     if skinny_type2 == 3:
         offset_eye = int(radius/randint(2, 3))
         eye_size = int(radius/randint(3, 4))
@@ -502,8 +498,7 @@ def drawItemBot2():
         pygame.draw.circle(DISPLAY, COLOR2[4], (BOT2_POSITION[0].getX()- offset_eye-3 ,BOT2_POSITION[0].getY()  ), int(eye_size), 0)
         pygame.draw.circle(DISPLAY, COLOR2[3], (BOT2_POSITION[0].getX()- offset_eye-3, BOT2_POSITION[0].getY()  ), int(eye_size*.75), 0)
     if skinny_type2 == 4:
-        img = pygame.image.load("face.png").convert_alpha()
-        DISPLAY.blit(img , (BOT2_POSITION[1].getX(),BOT2_POSITION[1].getY()))
+        DISPLAY.blit(img2 , (BOT2_POSITION[1].getX(),BOT2_POSITION[1].getY()))
 
 def STATE_EVENT1(): # for bot 1
     global atk1_count
@@ -1147,16 +1142,39 @@ def loadJSON():
 def initAll():
     ####  BOT 1
     global BOT1_RANGE_WEAPON, BOT2_RANGE_WEAPON
+    global img1,img2,skinny_type
+
+    #Texture
+    if skinny_type1 == 1:
+        img1 = pygame.image.load("glasses.png").convert_alpha()
+    if skinny_type1 == 2:
+        img1 = pygame.image.load("glasses.png").convert_alpha()
+    if skinny_type1 == 3:
+        pass
+    if skinny_type1 == 4:
+        img1 = pygame.image.load("face.png").convert_alpha()
+        
+    if skinny_type2 == 1:
+        img2 = pygame.image.load("Thug-Life.png").convert_alpha()
+    if skinny_type2 == 2:
+        img2 = pygame.image.load("Thug-Life.png").convert_alpha()      
+    if skinny_type2 == 3:
+        pass
+    if skinny_type2 == 4:
+        img2 = pygame.image.load("face.png").convert_alpha()
 
     parameterInit();
     initDrawSkinny1();
     initDrawSkinny2();
-
+    
     hp_bar()
     BOT1_RANGE_WEAPON_FINISH = True
     BOT2_RANGE_WEAPON_FINISH = True
     BOT1_RANGE_WEAPON = RangeWeapon(display_width, display_height, 1, skinny_type1)
     BOT2_RANGE_WEAPON = RangeWeapon(display_width, display_height, 2, skinny_type2)
+    
+    
+
 
 
 def checkDamage():
@@ -1320,6 +1338,14 @@ def randColor1():
 def randColor2():
     COLOR2[3] = (randint(0,255) ,randint(0,255) ,randint(0,255)  )
 
+
+DISPLAY = pygame.display.set_mode((display_width, display_height))
+DISPLAY.fill((255, 255, 255))                             #BG init
+
+parameterInit();
+pointBot1Init();
+pointBot2Init();
+pygame.init()
 
 Eventid = pygame.USEREVENT + 1
 pygame.time.set_timer(Eventid, INTERVAL_TIME)

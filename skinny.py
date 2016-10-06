@@ -46,6 +46,11 @@ WEAPON4_RADIUS = 20
 MAX_HP = 100
 HEAD_HIT_POINT = 10
 BODY_HIT_POINT = 5
+bot1_win = 0
+bot1_lose = 0
+bot2_win = 0
+bot2_lose = 0
+bot_draw = 0
 bot1_hammer_point = None
 bot1_scythe_point = None
 bot2_hammer_point = None
@@ -123,6 +128,13 @@ DISPLAY = pygame.display.set_mode((display_width, display_height))
 DISPLAY.fill((255, 255, 255))                             #BG init
 img1 = pygame.image.load("Face.png")#.convert_alpha()
 img2 = pygame.image.load("Face.png")#.convert_alpha()
+
+#Skin type2
+body_type2 = pygame.image.load("body_type2.png")
+head_band_type2 = pygame.image.load("head_band_type2.png")
+color_type2 = (0, 0, 0)
+color_hand_type2 = (255, 255, 0)
+color_normal_eye = (255, 255, 255)
 
 H_start_offset = 150
 CONTS_R_LEG_OFFSET = -5;
@@ -470,10 +482,56 @@ def drawWeaponBot2():
 
 def drawItemBot1():
     global img1,skinny_type1,y_offset_r_leg,CONTS_R_LEG_OFFSET;
+    
     if skinny_type1 == 1:
         DISPLAY.blit(img1 , (BOT1_POSITION[0].getX()-radius,BOT1_POSITION[0].getY()))
     if skinny_type1 == 2:
-        DISPLAY.blit(img1 , (BOT1_POSITION[0].getX()-radius,BOT1_POSITION[0].getY()))
+        pygame.draw.circle(DISPLAY, color_type2, (BOT1_POSITION[0].getX(), BOT1_POSITION[0].getY()), radius, 0)
+        if MOTION_STATE == "ATK":
+            pygame.draw.arc(DISPLAY, COLOR[3], (BOT1_POSITION[0].getX()-(radius*3/4),BOT1_POSITION[0].getY()-(radius/4),radius/2,radius/2), math.pi * 3 / 4, math.pi * 7 / 4, 10)
+            pygame.draw.arc(DISPLAY, COLOR[3], (BOT1_POSITION[0].getX()+(radius/4),BOT1_POSITION[0].getY()-(radius/4),radius/2,radius/2), math.pi * 5 / 4, math.pi * 9 / 4, 10)
+            pygame.draw.arc(DISPLAY, COLOR[3], (BOT1_POSITION[0].getX()-(radius/4),BOT1_POSITION[0].getY()+(radius/2),radius/2,radius/2), 0, math.pi, 10)
+            
+        else:
+            pygame.draw.arc(DISPLAY, color_normal_eye, (BOT1_POSITION[0].getX()-(radius*3/4),BOT1_POSITION[0].getY()-(radius/4),radius/2,radius/2), math.pi, math.pi*2, 10)
+            pygame.draw.arc(DISPLAY, color_normal_eye, (BOT1_POSITION[0].getX()+(radius/4),BOT1_POSITION[0].getY()-(radius/4),radius/2,radius/2), math.pi, math.pi*2, 10)
+            pygame.draw.arc(DISPLAY, color_normal_eye, (BOT1_POSITION[0].getX()-(radius/4),BOT1_POSITION[0].getY()+(radius/4),radius/2,radius/2), math.pi, math.pi*2, 10)
+        #DISPLAY.blit(img1 , (BOT1_POSITION[0].getX()-radius,BOT1_POSITION[0].getY()))
+
+        #Draw arm
+        pygame.draw.line(DISPLAY, color_type2, (BOT1_POSITION[1].getX(), BOT1_POSITION[1].getY()), (BOT1_POSITION[5].getX(), BOT1_POSITION[5].getY()), mini_radius*2)
+        pygame.draw.line(DISPLAY, color_type2, (BOT1_POSITION[5].getX(), BOT1_POSITION[5].getY()), (BOT1_POSITION[9].getX(), BOT1_POSITION[9].getY()), mini_radius*2)
+        pygame.draw.line(DISPLAY, color_type2, (BOT1_POSITION[2].getX(), BOT1_POSITION[2].getY()), (BOT1_POSITION[6].getX(), BOT1_POSITION[6].getY()), mini_radius*2)
+        pygame.draw.line(DISPLAY, color_type2, (BOT1_POSITION[6].getX(), BOT1_POSITION[6].getY()), (BOT1_POSITION[10].getX(), BOT1_POSITION[10].getY()), mini_radius*2)
+        #Draw Leg
+        pygame.draw.line(DISPLAY, color_type2, (BOT1_POSITION[3].getX(), BOT1_POSITION[3].getY()), (BOT1_POSITION[7].getX(), BOT1_POSITION[7].getY()), mini_radius*2)
+        pygame.draw.line(DISPLAY, color_type2, (BOT1_POSITION[7].getX(), BOT1_POSITION[7].getY()), (BOT1_POSITION[11].getX(), BOT1_POSITION[11].getY()), mini_radius*2)
+        pygame.draw.line(DISPLAY, color_type2, (BOT1_POSITION[4].getX(), BOT1_POSITION[4].getY()), (BOT1_POSITION[8].getX(), BOT1_POSITION[8].getY()), mini_radius*2)
+        pygame.draw.line(DISPLAY, color_type2, (BOT1_POSITION[8].getX(), BOT1_POSITION[8].getY()), (BOT1_POSITION[12].getX(), BOT1_POSITION[12].getY()), mini_radius*2)
+        #Clean joint
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT1_POSITION[1].getX()), int(BOT1_POSITION[1].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT1_POSITION[2].getX()), int(BOT1_POSITION[2].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT1_POSITION[3].getX()), int(BOT1_POSITION[3].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT1_POSITION[4].getX()), int(BOT1_POSITION[4].getY()-5)), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT1_POSITION[5].getX()), int(BOT1_POSITION[5].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT1_POSITION[6].getX()), int(BOT1_POSITION[6].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT1_POSITION[7].getX()), int(BOT1_POSITION[7].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT1_POSITION[8].getX()), int(BOT1_POSITION[8].getY()-5)), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_hand_type2, (int(BOT1_POSITION[9].getX()), int(BOT1_POSITION[9].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_hand_type2, (int(BOT1_POSITION[10].getX()), int(BOT1_POSITION[10].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT1_POSITION[11].getX()), int(BOT1_POSITION[11].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT1_POSITION[12].getX()), int(BOT1_POSITION[12].getY()-5)), mini_radius, 0)
+        type2_hair_point = []
+        for i in range(9):
+            for j in range(2):
+                type2_hair_point.append([(BOT1_POSITION[0].getX()-radius)+(radius*i/4), BOT1_POSITION[0].getY()-(radius/3)-((radius)*(j%2))])
+        type2_hair_point.pop()
+        DISPLAY.blit(head_band_type2 , (int(BOT1_POSITION[0].getX()-radius),int(BOT1_POSITION[0].getY()-radius/3)))
+        #type2_hair_point = [[BOT1_POSITION[0].getX()-(radius*3/4), BOT1_POSITION[0].getY()-radius/2], [BOT1_POSITION[0].getX()-(radius*3/4), BOT1_POSITION[0].getY()-radius], [BOT1_POSITION[0].getX()-(radius/2), BOT1_POSITION[0].getY()-radius*3/4]]
+        pygame.draw.polygon(DISPLAY, COLOR[3], type2_hair_point)
+        DISPLAY.blit(body_type2 , (BOT1_POSITION[1].getX(),BOT1_POSITION[1].getY()))
+        
+        
     if skinny_type1 == 3:
         offset_eye = int(radius/randint(2, 3))
         eye_size = int(radius/randint(3, 4))
@@ -515,7 +573,52 @@ def drawItemBot2():
     if skinny_type2 == 1:
         DISPLAY.blit(img2 , (BOT2_POSITION[0].getX()-radius,BOT2_POSITION[0].getY()))
     if skinny_type2 == 2:
-        DISPLAY.blit(img2 , (BOT2_POSITION[0].getX()-radius,BOT2_POSITION[0].getY()))
+        pygame.draw.circle(DISPLAY, color_type2, (BOT2_POSITION[0].getX(), BOT2_POSITION[0].getY()), radius, 0)
+        if MOTION_STATE == "ATK":
+            pygame.draw.arc(DISPLAY, COLOR2[3], (BOT2_POSITION[0].getX()-(radius*3/4),BOT2_POSITION[0].getY()-(radius/4),radius/2,radius/2), math.pi * 3 / 4, math.pi * 7 / 4, 10)
+            pygame.draw.arc(DISPLAY, COLOR2[3], (BOT2_POSITION[0].getX()+(radius/4),BOT2_POSITION[0].getY()-(radius/4),radius/2,radius/2), math.pi * 5 / 4, math.pi * 9 / 4, 10)
+            pygame.draw.arc(DISPLAY, COLOR2[3], (BOT2_POSITION[0].getX()-(radius/4),BOT2_POSITION[0].getY()+(radius/2),radius/2,radius/2), 0, math.pi, 10)
+            
+        else:
+            pygame.draw.arc(DISPLAY, color_normal_eye, (BOT2_POSITION[0].getX()-(radius*3/4),BOT2_POSITION[0].getY()-(radius/4),radius/2,radius/2), math.pi, math.pi*2, 10)
+            pygame.draw.arc(DISPLAY, color_normal_eye, (BOT2_POSITION[0].getX()+(radius/4),BOT2_POSITION[0].getY()-(radius/4),radius/2,radius/2), math.pi, math.pi*2, 10)
+            pygame.draw.arc(DISPLAY, color_normal_eye, (BOT2_POSITION[0].getX()-(radius/4),BOT2_POSITION[0].getY()+(radius/4),radius/2,radius/2), math.pi, math.pi*2, 10)
+        #DISPLAY.blit(img1 , (BOT2_POSITION[0].getX()-radius,BOT2_POSITION[0].getY()))
+
+        #Draw arm
+        pygame.draw.line(DISPLAY, color_type2, (BOT2_POSITION[1].getX(), BOT2_POSITION[1].getY()), (BOT2_POSITION[5].getX(), BOT2_POSITION[5].getY()), mini_radius*2)
+        pygame.draw.line(DISPLAY, color_type2, (BOT2_POSITION[5].getX(), BOT2_POSITION[5].getY()), (BOT2_POSITION[9].getX(), BOT2_POSITION[9].getY()), mini_radius*2)
+        pygame.draw.line(DISPLAY, color_type2, (BOT2_POSITION[2].getX(), BOT2_POSITION[2].getY()), (BOT2_POSITION[6].getX(), BOT2_POSITION[6].getY()), mini_radius*2)
+        pygame.draw.line(DISPLAY, color_type2, (BOT2_POSITION[6].getX(), BOT2_POSITION[6].getY()), (BOT2_POSITION[10].getX(), BOT2_POSITION[10].getY()), mini_radius*2)
+        #Draw Leg
+        pygame.draw.line(DISPLAY, color_type2, (BOT2_POSITION[3].getX(), BOT2_POSITION[3].getY()), (BOT2_POSITION[7].getX(), BOT2_POSITION[7].getY()), mini_radius*2)
+        pygame.draw.line(DISPLAY, color_type2, (BOT2_POSITION[7].getX(), BOT2_POSITION[7].getY()), (BOT2_POSITION[11].getX(), BOT2_POSITION[11].getY()), mini_radius*2)
+        pygame.draw.line(DISPLAY, color_type2, (BOT2_POSITION[4].getX(), BOT2_POSITION[4].getY()), (BOT2_POSITION[8].getX(), BOT2_POSITION[8].getY()), mini_radius*2)
+        pygame.draw.line(DISPLAY, color_type2, (BOT2_POSITION[8].getX(), BOT2_POSITION[8].getY()), (BOT2_POSITION[12].getX(), BOT2_POSITION[12].getY()), mini_radius*2)
+        #Clean joint
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT2_POSITION[1].getX()), int(BOT2_POSITION[1].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT2_POSITION[2].getX()), int(BOT2_POSITION[2].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT2_POSITION[3].getX()), int(BOT2_POSITION[3].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT2_POSITION[4].getX()), int(BOT2_POSITION[4].getY()-5)), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT2_POSITION[5].getX()), int(BOT2_POSITION[5].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT2_POSITION[6].getX()), int(BOT2_POSITION[6].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT2_POSITION[7].getX()), int(BOT2_POSITION[7].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT2_POSITION[8].getX()), int(BOT2_POSITION[8].getY()-5)), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_hand_type2, (int(BOT2_POSITION[9].getX()), int(BOT2_POSITION[9].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_hand_type2, (int(BOT2_POSITION[10].getX()), int(BOT2_POSITION[10].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT2_POSITION[11].getX()), int(BOT2_POSITION[11].getY())), mini_radius, 0)
+        pygame.draw.circle(DISPLAY, color_type2, (int(BOT2_POSITION[12].getX()), int(BOT2_POSITION[12].getY()-5)), mini_radius, 0)
+        type2_hair_point = []
+        for i in range(9):
+            for j in range(2):
+                type2_hair_point.append([(BOT2_POSITION[0].getX()+radius)-(radius*i/4), BOT2_POSITION[0].getY()-(radius/3)-((radius)*(j%2))])
+        type2_hair_point.pop()
+        DISPLAY.blit(head_band_type2 , (int(BOT2_POSITION[0].getX()-radius),int(BOT2_POSITION[0].getY()-radius/3)))
+        #type2_hair_point = [[BOT2_POSITION[0].getX()-(radius*3/4), BOT2_POSITION[0].getY()-radius/2], [BOT2_POSITION[0].getX()-(radius*3/4), BOT2_POSITION[0].getY()-radius], [BOT2_POSITION[0].getX()-(radius/2), BOT2_POSITION[0].getY()-radius*3/4]]
+        pygame.draw.polygon(DISPLAY, COLOR2[3], type2_hair_point)
+        DISPLAY.blit(body_type2 , (BOT2_POSITION[1].getX(),BOT2_POSITION[1].getY()))
+
+        
     if skinny_type2 == 3:
         offset_eye = int(radius/randint(2, 3))
         eye_size = int(radius/randint(3, 4))        
@@ -1172,12 +1275,26 @@ def ATK_PENDULUM2():
 
 
 def hp_bar():
-    global hp_bar_color_base, hp_bar_color_fill, offset_width_hp_bar, offset_height_hp_bar, hp_bar_width, hp_bar_height, BOT1_HP, BOT2_HP, MAX_HP
+    global hp_bar_color_base, hp_bar_color_fill, offset_width_hp_bar, offset_height_hp_bar, hp_bar_width, hp_bar_height, BOT1_HP, BOT2_HP, MAX_HP, bot1_win, bot1_lose, bot2_win, bot2_lose, bot_draw, skinny_type1, skinny_type2
     #BOT1
+    text_bot1 = "Skinny Type:%d W:%d L:%d D:%d" % (skinny_type1, bot1_win, bot1_lose, bot_draw) 
+    text_box1 = pygame.font.Font(None, 25).render(text_bot1, 0, hp_bar_color_fill)
+    text_box1_height = text_box1.get_height()
+    text_box1_width = text_box1.get_width()
+    text_box1_x_pos = offset_width_hp_bar   #calculate position to draw text in center vertical and bottom of screen
+    text_box1_y_pos = display_height - offset_height_hp_bar - hp_bar_height - text_box1_height
+    DISPLAY.blit(text_box1, (text_box1_x_pos, text_box1_y_pos)) #render text
     bot1_hp_width = BOT1_HP * hp_bar_width / MAX_HP
     pygame.draw.rect(DISPLAY, hp_bar_color_base, (offset_width_hp_bar, display_height - offset_height_hp_bar - hp_bar_height, hp_bar_width, hp_bar_height))
     pygame.draw.rect(DISPLAY, hp_bar_color_fill, (offset_width_hp_bar + (hp_bar_width - bot1_hp_width), display_height - offset_height_hp_bar - hp_bar_height, bot1_hp_width, hp_bar_height))
     #BOT2
+    text_bot2 = "Skinny Type:%d W:%d L:%d D:%d" % (skinny_type2, bot2_win, bot2_lose, bot_draw) 
+    text_box2 = pygame.font.Font(None, 25).render(text_bot2, 0, hp_bar_color_fill)
+    text_box2_height = text_box2.get_height()
+    text_box2_width = text_box2.get_width()
+    text_box2_x_pos = display_width - offset_width_hp_bar - text_box2_width   #calculate position to draw text in center vertical and bottom of screen
+    text_box2_y_pos = display_height - offset_height_hp_bar - hp_bar_height - text_box2_height
+    DISPLAY.blit(text_box2, (text_box2_x_pos, text_box2_y_pos)) #render text
     bot2_hp_width = BOT2_HP * hp_bar_width / MAX_HP
     pygame.draw.rect(DISPLAY, hp_bar_color_base, (display_width - offset_width_hp_bar - hp_bar_width, display_height - offset_height_hp_bar - hp_bar_height, hp_bar_width, hp_bar_height))
     pygame.draw.rect(DISPLAY, hp_bar_color_fill, (display_width - offset_width_hp_bar - hp_bar_width, display_height - offset_height_hp_bar - hp_bar_height, bot2_hp_width, hp_bar_height))
@@ -1243,7 +1360,7 @@ def initAll():
 
 
 def checkDamage():
-    global MOTION_STATE,MOTION2_STATE,MOTION_SEQ,MOTION2_SEQ,BOT1_WEAPON_HITTING,BOT1_HP,BOT2_WEAPON_HITTING,BOT2_HP,MAX_HP,BOT1_RANGE_WEAPON_HITTING,HEAD_HIT_POINT,BODY_HIT_POINT,BOT2_RANGE_WEAPON_HITTING,bot1_hammer_point,bot2_hammer_point,bot1_scythe_point,bot2_scythe_point
+    global MOTION_STATE,MOTION2_STATE,MOTION_SEQ,MOTION2_SEQ,BOT1_WEAPON_HITTING,BOT1_HP,BOT2_WEAPON_HITTING,BOT2_HP,MAX_HP,BOT1_RANGE_WEAPON_HITTING,HEAD_HIT_POINT,BODY_HIT_POINT,BOT2_RANGE_WEAPON_HITTING,bot1_hammer_point,bot2_hammer_point,bot1_scythe_point,bot2_scythe_point, bot1_win, bot1_lose, bot2_win, bot2_lose, bot_draw
 
     #WEAPON BOT 1
     if skinny_type1 == 1:
@@ -1251,12 +1368,12 @@ def checkDamage():
             if BOT1_WEAPON_HITTING == False:
                 BOT1_WEAPON_HITTING = True
                 BOT2_HP -= BODY_HIT_POINT
-                print("SWORD BODY")
+                #print("SWORD BODY")
         elif BOT1_POSITION[13].getX() >= (BOT2_POSITION[0].getX() - radius) and BOT1_POSITION[13].getY() >= (BOT2_POSITION[0].getY() - radius):
             if BOT1_WEAPON_HITTING == False:
                 BOT1_WEAPON_HITTING = True
                 BOT2_HP -= HEAD_HIT_POINT
-                print("SWORD HEAD")
+                #print("SWORD HEAD")
         else:
             BOT1_WEAPON_HITTING = False
     elif skinny_type1 == 2:
@@ -1264,12 +1381,12 @@ def checkDamage():
             if BOT1_WEAPON_HITTING == False:
                 BOT1_WEAPON_HITTING = True
                 BOT2_HP -= BODY_HIT_POINT
-                print("HAMMER BODY")
+                #print("HAMMER BODY")
         elif bot1_hammer_point[0] >= (BOT2_POSITION[0].getX() - radius) and bot1_hammer_point[1] >= (BOT2_POSITION[0].getY() - radius):
             if BOT1_WEAPON_HITTING == False:
                 BOT1_WEAPON_HITTING = True
                 BOT2_HP -= HEAD_HIT_POINT
-                print("HAMMER HEAD")
+                #print("HAMMER HEAD")
         else:
             BOT1_WEAPON_HITTING = False
     elif skinny_type1 == 3:
@@ -1277,12 +1394,12 @@ def checkDamage():
             if BOT1_WEAPON_HITTING == False:
                 BOT1_WEAPON_HITTING = True
                 BOT2_HP -= BODY_HIT_POINT
-                print("SCYTHE BODY")
+                #print("SCYTHE BODY")
         elif bot1_scythe_point[0] >= (BOT2_POSITION[0].getX() - radius) and bot1_scythe_point[1] >= (BOT2_POSITION[0].getY() - radius):
             if BOT1_WEAPON_HITTING == False:
                 BOT1_WEAPON_HITTING = True
                 BOT2_HP -= HEAD_HIT_POINT
-                print("SCYTHE HEAD")
+                #print("SCYTHE HEAD")
         else:
             BOT1_WEAPON_HITTING = False
     elif skinny_type1 == 4:
@@ -1290,12 +1407,12 @@ def checkDamage():
             if BOT1_WEAPON_HITTING == False:
                 BOT1_WEAPON_HITTING = True
                 BOT2_HP -= BODY_HIT_POINT
-                print("CIRCLE BODY")
+                #print("CIRCLE BODY")
         elif (BOT1_POSITION[13].getX() + WEAPON4_RADIUS) >= (BOT2_POSITION[0].getX() - radius) and (BOT1_POSITION[13].getY() + WEAPON4_RADIUS) >= (BOT2_POSITION[0].getY() - radius):
             if BOT1_WEAPON_HITTING == False:
                 BOT1_WEAPON_HITTING = True
                 BOT2_HP -= HEAD_HIT_POINT
-                print("CIRCLE HEAD")
+                #print("CIRCLE HEAD")
         else:
             BOT1_WEAPON_HITTING = False
 
@@ -1305,12 +1422,12 @@ def checkDamage():
             if BOT1_RANGE_WEAPON_HITTING == False:
                 BOT1_RANGE_WEAPON_HITTING = True
                 BOT2_HP -= BODY_HIT_POINT
-                print("RANGE BODY")
+                #print("RANGE BODY")
         elif (BOT1_RANGE_WEAPON.getDrawX() + BOT1_RANGE_WEAPON.getRadius()) >= (BOT2_POSITION[0].getX() - radius)and (BOT1_RANGE_WEAPON.getDrawY() + BOT1_RANGE_WEAPON.getRadius()) >= (BOT2_POSITION[0].getY() - radius):
             if BOT1_RANGE_WEAPON_HITTING == False:
                 BOT1_RANGE_WEAPON_HITTING = True
                 BOT2_HP -= HEAD_HIT_POINT
-                print("RANGE HEAD")
+                #print("RANGE HEAD")
         else:
             BOT1_RANGE_WEAPON_HITTING = False
 
@@ -1320,12 +1437,12 @@ def checkDamage():
             if BOT2_WEAPON_HITTING == False:
                 BOT2_WEAPON_HITTING = True
                 BOT1_HP -= BODY_HIT_POINT
-                print("SWORD2 BODY")
+                #print("SWORD2 BODY")
         elif BOT2_POSITION[13].getX() <= (BOT1_POSITION[0].getX() - radius) and BOT2_POSITION[13].getY() >= (BOT1_POSITION[0].getY() - radius):
             if BOT2_WEAPON_HITTING == False:
                 BOT2_WEAPON_HITTING = True
                 BOT1_HP -= HEAD_HIT_POINT
-                print("SWORD2 HEAD")
+                #print("SWORD2 HEAD")
         else:
             BOT2_WEAPON_HITTING = False
     elif skinny_type2 == 2:
@@ -1333,12 +1450,12 @@ def checkDamage():
             if BOT2_WEAPON_HITTING == False:
                 BOT2_WEAPON_HITTING = True
                 BOT1_HP -= BODY_HIT_POINT
-                print("HAMMER2 BODY")
+                #print("HAMMER2 BODY")
         elif bot2_hammer_point[0] <= (BOT1_POSITION[0].getX() - radius) and bot2_hammer_point[1] >= (BOT1_POSITION[0].getY() - radius):
             if BOT2_WEAPON_HITTING == False:
                 BOT2_WEAPON_HITTING = True
                 BOT1_HP -= HEAD_HIT_POINT
-                print("HAMMER2 HEAD")
+                #print("HAMMER2 HEAD")
         else:
             BOT2_WEAPON_HITTING = False
     elif skinny_type2 == 3:
@@ -1346,12 +1463,12 @@ def checkDamage():
             if BOT2_WEAPON_HITTING == False:
                 BOT2_WEAPON_HITTING = True
                 BOT1_HP -= BODY_HIT_POINT
-                print("SCYTHE2 BODY")
+                #print("SCYTHE2 BODY")
         elif bot2_scythe_point[0] <= (BOT1_POSITION[0].getX() - radius) and bot2_scythe_point[1] >= (BOT1_POSITION[0].getY() - radius):
             if BOT2_WEAPON_HITTING == False:
                 BOT2_WEAPON_HITTING = True
                 BOT1_HP -= HEAD_HIT_POINT
-                print("SCYTHE2 HEAD")
+                #print("SCYTHE2 HEAD")
         else:
             BOT2_WEAPON_HITTING = False
     elif skinny_type2 == 4:
@@ -1359,12 +1476,12 @@ def checkDamage():
             if BOT2_WEAPON_HITTING == False:
                 BOT2_WEAPON_HITTING = True
                 BOT1_HP -= BODY_HIT_POINT
-                print("CIRCLE2 BODY")
+                #print("CIRCLE2 BODY")
         elif (BOT2_POSITION[13].getX() - WEAPON4_RADIUS) <= (BOT1_POSITION[0].getX() - radius) and (BOT2_POSITION[13].getY() + WEAPON4_RADIUS) >= (BOT1_POSITION[0].getY() - radius):
             if BOT2_WEAPON_HITTING == False:
                 BOT2_WEAPON_HITTING = True
                 BOT1_HP -= HEAD_HIT_POINT
-                print("CIRCLE2 HEAD")
+                #print("CIRCLE2 HEAD")
         else:
             BOT2_WEAPON_HITTING = False
 
@@ -1374,12 +1491,12 @@ def checkDamage():
             if BOT2_RANGE_WEAPON_HITTING == False:
                 BOT2_RANGE_WEAPON_HITTING = True
                 BOT1_HP -= BODY_HIT_POINT
-                print("RANGE2 BODY")
+                #print("RANGE2 BODY")
         elif (BOT2_RANGE_WEAPON.getDrawX() - BOT2_RANGE_WEAPON.getRadius()) <= (BOT1_POSITION[0].getX() - radius) and (BOT2_RANGE_WEAPON.getDrawY() + BOT2_RANGE_WEAPON.getRadius()) >= (BOT1_POSITION[0].getY() - radius):
             if BOT2_RANGE_WEAPON_HITTING == False:
                 BOT2_RANGE_WEAPON_HITTING = True
                 BOT1_HP -= HEAD_HIT_POINT
-                print("RANGE2 HEAD")
+                #print("RANGE2 HEAD")
         else:
             BOT2_RANGE_WEAPON_HITTING = False
 
@@ -1387,7 +1504,24 @@ def checkDamage():
     #Restart Battle
     if BOT1_HP <= 0 or BOT2_HP <= 0:
         pygame.time.set_timer(Eventid, 0)
+        if BOT1_HP == BOT2_HP:
+            bot_draw += 1
+        elif BOT1_HP < BOT2_HP:
+            bot1_lose += 1
+            bot2_win += 1
+        elif BOT1_HP > BOT2_HP:
+            bot1_win += 1
+            bot2_lose += 1
         print("KO1")
+        text = pygame.font.Font(None, 100).render("K.O.", 0, hp_bar_color_fill)
+        text_height = text.get_height()
+        text_width = text.get_width()
+        text_x_pos = (display_width/2) - (text_width/2)
+        text_y_pos = (display_height/2) - (text_height/2)
+        DISPLAY.blit(text, (text_x_pos, text_y_pos)) #render text
+        hp_bar()
+        pygame.display.update()
+        pygame.time.delay(2000)
         initAll()
         pointBot1Init();
         pointBot2Init();
